@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Simple Markdown site template
 #### Incredible simple but powerful site template
 
@@ -34,7 +33,3 @@ document.js located in the root folder of the site. This script contains and loa
 * controls.js
 * marked.js
 =======
-# skrzym.github.io
-Michael Skrzypiec personal projects site.
->>>>>>> origin/master
-
