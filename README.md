@@ -1,1 +1,0 @@
-# MichaelSkrzypiec.com
