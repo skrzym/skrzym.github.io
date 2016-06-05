@@ -2,6 +2,8 @@
 @import url("font-awesome.min.css");
 
 /*
+	Michael Skrzypiec personal info and projects website
+	Site design based on:
 	Astral by HTML5 UP
 	html5up.net | @n33co
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
@@ -747,10 +749,16 @@
 /* Basic */
 
 	body {
-		background-color:#192A3A;
-		/*background-image: url("images/overlay.png"), url("images/city.jpg");*/
-		background-repeat: repeat, no-repeat;
-		background-size: auto, 100% auto;
+        /*
+        background-color:#192A3A;
+        background-image: url("images/overlay.png"), url("images/city.jpg");
+        background-repeat: repeat, no-repeat;
+        background-size: auto, 100% auto;
+        */
+		background-color:#23558A;
+        background-image: url("images/190.jpg");
+        background-repeat: no-repeat;
+        background-size: 100% auto;
 		font-family: 'Source Sans Pro', sans-serif;
 		font-weight: 300;
 		color: #777777;
@@ -1098,6 +1106,13 @@
 			height: 100%;
 			z-index: 1;
 		}
+/* About Me*/
+
+    #aboutme p {
+		color: black;
+        font-weight: 300;
+		text-align: justify;
+    }
 
 /* Footer */
 
@@ -1360,9 +1375,9 @@
 
 				#me .pic {
 					display: block;
-					/*position: absolute;*/
 					position: relative;
-					padding: 0;
+					/*position: relative;*/
+					/*padding: 0;*/
 					right: 0;
 					top: 0;
 					height: 100%;
