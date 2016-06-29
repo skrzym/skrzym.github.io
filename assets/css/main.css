@@ -1459,6 +1459,11 @@
 						margin-top: 0;
 					}
 
+		/* Projects*/
+			#projects .row h3 {
+				text-align: center;
+			}
+
 		/* Footer */
 
 			#footer {
@@ -1621,6 +1626,10 @@
             #projects .row p{
                 text-align: center;
             }
+
+						#projects .row h3 {
+								text-align: center;
+							}
 
 		/* Thanks */
 			#thanks{
