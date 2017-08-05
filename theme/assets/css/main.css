@@ -755,15 +755,17 @@
         background-repeat: repeat, no-repeat;
         background-size: auto, 100% auto;
         */
-		/*background-color:#23558A;
-        background-image: url("images/190.jpg");
-        background-repeat: no-repeat;
-        background-size: 100% auto;*/
+		/*background-color: #23558A;*/
+        background-image: url("images/pattern2.png");
+        background-repeat: repeat;
+        background-size: 1000px;
+				background-position: top left;
+				background-attachment:fixed;
 		font-family: 'Source Sans Pro', sans-serif;
 		font-weight: 300;
 		color: #777777;
 	}
-		/* true_blue */
+		/* true_blue
 		body {
 			background-image: -webkit-gradient(linear, left top, right bottom, from(rgb(29,74,137)), to(rgb(120,164,199)));
 			background-image: -webkit-linear-gradient(left top, rgb(29,74,137), rgb(120,164,199));
@@ -772,13 +774,13 @@
 			background-image: -ms-linear-gradient(left top, rgb(29,74,137), rgb(120,164,199));
 			background-image: linear-gradient(left top, rgb(29,74,137), rgb(120,164,199));
 			}
+
 		body {
-			/*background-attachment: fixed;*/
 			background-size: 100% auto;
 			background-repeat: no-repeat;
 			background-color: #333;
 		}
-
+		*/
 		body.is-loading *, body.is-loading *:before, body.is-loading *:after {
 			-moz-transition: none !important;
 			-webkit-transition: none !important;
