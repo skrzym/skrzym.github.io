@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en" itemscope itemtype="http://schema.org/Person">
+<head>
+  <meta charset="utf-8">
+  <!-- Site Meta Data -->
+  <title>NFL Data and Machine Learning… One Play at a Time — Part 1</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="Michael Skrzypiec">
+
+  <link rel="shortcut icon" href="/theme/images/icons/favicon.ico">
+
+  <!-- schema.org -->
+  <meta itemprop="name" content="Michael Skrzypiec">
+  <meta itemprop="image" content="/theme/images/me_small.jpg">
+  <meta itemprop="description" content="">
+
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+  <!-- Style Meta Data -->
+  <link rel="stylesheet" href="/theme/css/style.css" type="text/css" />
+  <link rel="stylesheet" href="/theme/css/pygments.css" type="text/css" />
+
+  <!-- Feed Meta Data -->
+
+  <!-- Twitter Feed -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="skrzym">
+  <meta name="twitter:image" content="">
+
+<meta name="twitter:creator" content="skrzym">
+<meta name="twitter:url" content="/nfl-data-and-machine-learning-one-play-at-a-time-part-1.html">
+<meta name="twitter:title" content="Michael Skrzypiec ~ NFL Data and Machine Learning… One Play at a Time — Part 1">
+<meta name="twitter:description" content="Discuss different ways we can explore and visualize data provided by the NFL APIs since the 2009 season. We also dig into how a rule change back in 2015 can be detected in the data.">
+
+<!-- Facebook Meta Data -->
+<meta property="og:title" content="Michael Skrzypiec ~ NFL Data and Machine Learning… One Play at a Time — Part 1" />
+<meta property="og:description" content="Discuss different ways we can explore and visualize data provided by the NFL APIs since the 2009 season. We also dig into how a rule change back in 2015 can be detected in the data." />
+<meta property="og:image" content="" />
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside>
+    <center><a href=""><img id="avatar" src="/theme/images/me_small.jpg"></a></center>
+    <h1>Michael Skrzypiec</h1>
+      <p>Data Analyst/Project Manager</p>
+    <br>
+
+      <a class="twitter-follow-button"
+      href="https://twitter.com/skrzym"
+      data-show-count="false"
+      data-lang="en">
+      Follow @twitterdev
+      </a>
+      <script type="text/javascript">
+      window.twttr = (function (d, s, id) {
+        var t, js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src= "https://platform.twitter.com/widgets.js";
+        fjs.parentNode.insertBefore(js, fjs);
+        return window.twttr || (t = { _e: [], ready: function (f) { t._e.push(f) } });
+      }(document, "script", "twitter-wjs"));
+      </script>
+
+    <nav class="nav">
+      <ul class="list-bare">
+
+          <li><a class="nav__link" href="/blog.html">Recent Posts</a></li>
+          <li><a class="nav__link" href="/categories.html">Categories</a></li>
+          <li><a class="nav__link" href="/tags.html">Tags</a></li>
+          <li><a class="nav__link" href="/#aboutme">About Me</a></li>
+
+
+      </ul>
+    </nav>
+
+    <p class="social">
+        <a href="https://www.linkedin.com/in/michaelskrzypiec" target="_blank" ><img src="/theme/images/icons/linkedin.png"></a>
+        <a href="https://github.com/skrzym" target="_blank" ><img src="/theme/images/icons/github.png"></a>
+        <a href="https://twitter.com/skrzym" target="_blank" ><img src="/theme/images/icons/twitter.png"></a>
+    </p>
+
+
+
+  </aside>
+
+  <!-- Content -->
+  <article>
+<section id="content">
+    <article>
+        <h2 class="post_title post_detail"><a href="/nfl-data-and-machine-learning-one-play-at-a-time-part-1.html" rel="bookmark" title="Permalink to NFL Data and Machine Learning… One Play at a Time — Part 1">NFL Data and Machine Learning… One Play at a Time — Part 1</a></h2>
+        <div class="entry-content blog-post">
+            <p><em>How to wrangle NFL play-by-play data into a predictive machine.</em></p>
+<p><em>In this post we will investigate data provided by the NFL APIs since the 2009
+season and see what different ways we can explore and visualize it. We will look
+at a couple different visualizations of the game and dig into how a rule change
+back in 2015 can be detected in the data.</em></p>
+<p><em>Part two will make a basic model to choose the right play given a particular
+game scenario and showcase a web app developed to run the model whenever,
+wherever you want.</em></p>
+<p><em>Part three will take this model one step further and incorporate some more
+advanced methods to indicate which actions on a play lead to positive or
+negative outcomes. So let’s get started!</em></p>
+<p>An NFL quarterback makes on average 75 plays per game. That’s 75 plays in
+control of the ball to win the game. Whether or not that sounds like a lot to
+you, each game typically has just 11 minutes of actual game time and as a
+result, each play lasts about 4 and a half seconds. While there are countless
+articles and opinions on this surprising statistic (especially since the average
+NFL game actually lasts over 3 hours), a whole lot is riding on consistently
+making the right decision. Just one wrong play and the tides can turn
+dramatically with ever fewer chances to make up for it. That’s why players spend
+hours training, watching tapes, and memorizing strategies to flawlessly execute
+each one of those precious few chances to win. But even with all that
+preparation, the decision of what to do in given a situation is still the
+primary deciding factor between winning and losing. A perfectly executed play
+doesn’t matter if it was the wrong play to begin with. What if there was a way
+to know the right play to run for a given game scenario? A way to maximize your
+chances of getting that first down, scoring a touchdown, even winning the game?
+It all starts with making the right decision.</p>
+<p>Where do you start if you want to build such a magical prediction machine? Even
+with such little game time, each play generates a significant amount of data
+that the NFL collects and makes publicly available for fan websites, fantasy
+football enthusiasts, and data geeks like myself to pour over and dissect after
+the fact. With this information, we can begin to analyze what goes into all
+these plays and learn how to use that data to predict these crucial game-time
+decisions.</p>
+<h3>Moving the Ball</h3>
+<p>Our data comes from the NFL via their publicly available API with detailed stats
+on every play since the 2009 season. Let’s explore passing/rushing plays and see
+how we can glean some more information on when and where NFL teams move the ball
+the most. We can use heat-maps to show where on the field a pass is thrown or
+caught. Here is a heat map for the New England Patriots for regular seasons pass
+reception locations since 2009 broken out by the pass outcome.</p>
+<p><img alt="Chart 1" src="https://cdn-images-1.medium.com/max/1600/1*aJtxI50k2sFGhQCIWEje6A.png" /></p>
+<p>This chart does a good job of showing where on the field a catch happened, but
+it does not show us how far the ball was thrown. We can use a modified swarm
+plot to showcase that. Here is the same time frame showing fumbles, touchdowns,
+and interceptions by “Air Yards.”</p>
+<p><img alt="Chart 2" src="https://cdn-images-1.medium.com/max/1600/1*nOe5TIPYddG5zBrLP9oJCw.png" /></p>
+<p>Charts like these also work for smaller subsets of the data. Here is a look at
+Super Bowl LI’s data on each team’s completed passes, successful rushes, and
+scored field goals.</p>
+<p><img alt="Chart 3" src="https://cdn-images-1.medium.com/max/1600/1*kAsrUJgKZ8ZorMatcxPbtQ.png" /></p>
+<p>But what about something broader, a general trend that we can visualize across
+all teams for all seasons? It’s obvious teams move the ball via passing and
+rushing the most, and we made detailed charts showing where and how they do it.
+What about when? How do passing and rushing plays vary over the course of a
+game? Is one more likely than another at certain points?</p>
+<p><img alt="Chart 4" src="https://cdn-images-1.medium.com/max/1600/1*83PmmCw4a9fSLBxaWatU2g.png" /></p>
+<p>The charts above looks at passing, running, and field goal play counts for each
+minute of every regular season game since the 2009 season. The vertical white
+lines indicate the end of each quarter. Game time is at the bottom counting down
+from right to left, and the height of each bar is the number of plays that have
+happened during that game minute. If we look at each quarter across the three
+play types the last two minutes of the second quarter have some interesting
+spikes in activity. The passing and field goal plays have a huge uptick here
+relative to their use during the rest of the game while running plays don’t see
+any noticeable increase. This is no coincidence as a team is much more inclined
+to do anything they can to score (unless they already have a significant lead)
+before going into the half. They just don’t seem to use running plays to do it.</p>
+<h3>Through the Uprights</h3>
+<p>We can also look at how a play type has changed over the different seasons.
+Below we show separate charts indicating how kickers performed over the years on
+field goal attempts during the postseason.</p>
+<p><img alt="Chart 5" src="https://cdn-images-1.medium.com/max/1600/1*qCUbzXsQJ0u2Cu8Ppcz-CA.png" /></p>
+<p>Looks like all of the very long distance field goal attempts failed back in
+2009. Kickers were on point last postseason though with only 1 missed attempt!
+All this green might be a reason why the NFL is looking into <a href="http://profootballtalk.nbcsports.com/2016/07/17/nfl-will-explore-narrowing-the-uprights-by-putting-chips-in-footballs/">making the pylons
+a bit
+narrower</a>.
+This would up the challenge for today’s talented kickers and keep fans engaged
+with the increased risk of missing. This change wouldn’t be the first time the
+job of an NFL kicker was made more difficult. Let’s investigate a previous rule
+change that was also designed to increase a kicker’s risk of missing.</p>
+<h3>Kickers Are So Good Its Boring</h3>
+<p>Back at the start of the 2015 season, the NFL enacted new rules moving the PATs
+field goal position to the 15-yard line. Previously all extra point attempts
+were taken from the 2-yard line. So both extra point field goals and two-point
+conversions would set up at the 2. At this distance, the extra point kick was a
+20-yard attempt, and it was considered a gimme. Teams and fans alike would tune
+out for the kick as it was almost never missed. In our data from 2009 to 2014,
+extra point field goal attempts were missed only 20 times out of the 6733
+attempts. That’s a 99.7% success rate over 6 seasons of extra point attempts!
+<em>(Note this number does not include blocked or aborted field goals since those
+results are not relevant to this analysis.)</em></p>
+<p>The new rule enacted for the 2015 season added 13 extra yards to the kick making
+it a 33-yard attempt. The NFL hoped to make the game more exciting for fans and
+the field goal not such a guaranteed extra point for teams. Since we have data
+for extra point field goal attempts for the 2015 and 2016 seasons we can
+investigate if there was any significant impact on the success rate as a result
+of the rule change.</p>
+<p><img alt="Chart 6" src="https://cdn-images-1.medium.com/max/1600/1*B_3LrJjvl-049IDe0HnItg.png" /></p>
+<p>The results look very promising at first glance. In the two seasons following
+the change, there were five times as many missed attempts as there had been for
+the prior six seasons. Now, what are the chances that this difference in success
+rate could just be the result of bad luck for kickers? We can test for this
+chance by performing a permutation test. We want to see how likely it is for the
+4.34% change to occur randomly. Let’s assume there really is no difference in
+the success ratio for kickers before or after the rule change. This is
+effectively saying that the rule change did nothing so extra point attempts have
+just as much of a chance of succeeding during all the seasons. To generate our
+“random data” for comparison we shuffle all the extra point play data we have
+and reassign what group it’s in. Then we recalculate the difference in success
+rate between the new before and after groups. This is considered one replicate
+of our test statistic. We do these shuffling, relabeling, and computing steps
+many times to generate a sample distribution of these differences in success
+rate.</p>
+<p>For our test lets repeat these steps 100,000 times. Now we have a distribution
+that shows how random permutations of the test statistic compare against what we
+actually observed in the NFL, the 4.34% success drop after the rule change.
+Below is a chart showing the results of all this work visually.</p>
+<p><img alt="Chart 7" src="https://cdn-images-1.medium.com/max/1600/1*YWsKOD7TTLmLI13WDBiNmA.png" /></p>
+<p>Our 100,000 replicates of the success rate change are in blue, while the red
+line shows the 4.34% change we actually saw. To come up with the probability
+that the observed difference is due to chance, we would count up how many of our
+100,000 replicates came back with a difference greater than or equal to our
+4.34%. As you can see from above that happened zero times. This means the
+chances we would see a 4.34% drop randomly are so remote we know it wasn’t just
+due to randomness between the years. We infer that with all other things equal,
+the rule change caused a statistically significant drop in the extra point field
+goal success rate.</p>
+<h3>Next Up</h3>
+<p>There are countless ways we can slice up and visualize this NFL data, but the
+next step is putting it to work for us to predict the best play to make. In part
+2 we make a basic model to choose the right play given a specific game scenario.
+We also deploy the model to a web app and show how you can interact with it.</p>
+<hr />
+<p><strong>Thanks for reading!</strong></p>
+<p><strong>Feel free to reach out to me via the links below.</strong></p>
+<p><a href="https://www.linkedin.com/in/michaelskrzypiec/">LinkedIn</a><strong> |
+</strong><a href="https://twitter.com/Skrzym">Twitter</a><strong> | </strong><a href="https://github.com/skrzym">GitHub
+</a><strong>| </strong><a href="http://www.michaelskrzypiec.com/">Website</a></p>
+<p>**See this post on Medium <a href="https://medium.com/@skrzym/nfl-data-and-machine-learning-one-play-at-a-time-part-1-b5c6bfd576a7">here</a></p>
+        </div>
+        <div class="post_list">
+            <span>By </span>
+            <a href="/author/michael-skrzypiec.html">@Michael Skrzypiec</a>
+            <span> in </span>
+            <span class="post_category"><a href="/category/data-analysis.html" rel="bookmark" title="Permalink to Data Analysis">[ Data Analysis ]</a></span>
+            <span class="post_date">Sun 24 September 2017</span>
+            <div><span>Tags : </span>
+                <span><a href="/tag/nfl.html">#NFL, </a></span>
+                <span><a href="/tag/python.html">#Python, </a></span>
+                <span><a href="/tag/visualization.html">#Visualization, </a></span>
+            </div>
+
+            <div class="entry-social">
+                <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=/nfl-data-and-machine-learning-one-play-at-a-time-part-1.html&text=NFL Data and Machine Learning… One Play at a Time — Part 1&via=skrzym"><img src="/theme/images/icons/twitter-s.png"></a></span>
+
+                <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=/nfl-data-and-machine-learning-one-play-at-a-time-part-1.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="/theme/images/icons/google-s.png"></a></span>
+
+                <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=/nfl-data-and-machine-learning-one-play-at-a-time-part-1.html&t=NFL Data and Machine Learning… One Play at a Time — Part 1"><img src="/theme/images/icons/facebook-s.png"></a></span>
+
+                <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=/nfl-data-and-machine-learning-one-play-at-a-time-part-1.html&title=NFL Data and Machine Learning… One Play at a Time — Part 1" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="/theme/images/icons/linkedin-s.png"></a>
+
+                <span class="mail"><a href="mailto:?subject=NFL Data and Machine Learning… One Play at a Time — Part 1&amp;body=Viens découvrir un article à propos de [NFL Data and Machine Learning… One Play at a Time — Part 1] sur le site de Michael Skrzypiec. /nfl-data-and-machine-learning-one-play-at-a-time-part-1.html" title="Share by Email" target="_blank"><img src="/theme/images/icons/mail-s.png"></a></span>
+            </div>
+        </div>
+    </article>
+</section>
+<!-- JupyterStyleSheet -->
+<link rel="stylesheet" href="/theme/css/ipynb.css" type="text/css" />
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      Blog powered by <a href="http://getpelican.com/">Pelican</a>,
+      which takes great advantage of <a href="http://python.org">Python</a>.
+      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
+    </p>
+  </footer>
+
+
+</body>
+</html>
